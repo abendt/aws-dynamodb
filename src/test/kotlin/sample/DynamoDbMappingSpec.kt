@@ -38,7 +38,7 @@ class DynamoDbMappingSpec : StringSpec({
         val table = enhancedClient.table("java-record-table", TableSchema.fromClass(JavaRecord::class.java))
         table.createTable()
 
-        checkAll(javaRecordArb) { givenRecord ->
+        checkAll(50, javaRecordArb) { givenRecord ->
             val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
 
             table.putItem(givenRecord)
@@ -56,7 +56,7 @@ class DynamoDbMappingSpec : StringSpec({
         val table = enhancedClient.table("lombok-record-table", TableSchema.fromClass(LombokRecord::class.java))
         table.createTable()
 
-        checkAll(lombokRecordArb) { givenRecord ->
+        checkAll(50, lombokRecordArb) { givenRecord ->
             val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
 
             table.putItem(givenRecord)
@@ -74,7 +74,7 @@ class DynamoDbMappingSpec : StringSpec({
         val table = enhancedClient.table("kotlin-record-table", DataClassTableSchema(KotlinRecord::class))
         table.createTable()
 
-        checkAll(kotlinRecordArb) { givenRecord ->
+        checkAll(50, kotlinRecordArb) { givenRecord ->
             val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
 
             table.putItem(givenRecord)
