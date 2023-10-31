@@ -15,9 +15,17 @@ public class JavaRecord {
     private String partitionKey;
     private int sortKey;
 
+    // supported types: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes
+
     // Scalar Types – A scalar type can represent exactly one value. The scalar types are number, string, binary, Boolean, and null.
 
     private String stringAttribute;
+
+    private boolean booleanAttribute;
+
+    private int intAttribute;
+
+    private byte[] byteAttribute;
 
     // Document Types – A document type can represent a complex structure with nested attributes, such as what you would find in a JSON document. The document types are list and map.
     private List<String> stringList;
@@ -98,5 +106,29 @@ public class JavaRecord {
 
     public void setStringSet(Set<String> stringSet) {
         this.stringSet = stringSet;
+    }
+
+    public boolean isBooleanAttribute() {
+        return booleanAttribute;
+    }
+
+    public void setBooleanAttribute(boolean booleanAttribute) {
+        this.booleanAttribute = booleanAttribute;
+    }
+
+    public int getIntAttribute() {
+        return intAttribute;
+    }
+
+    public void setIntAttribute(int intAttribute) {
+        this.intAttribute = intAttribute;
+    }
+
+    public byte[] getByteAttribute() {
+        return byteAttribute;
+    }
+
+    public void setByteAttribute(byte[] byteAttribute) {
+        this.byteAttribute = byteAttribute;
     }
 }

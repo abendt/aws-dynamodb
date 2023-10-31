@@ -6,7 +6,6 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.extensions.testcontainers.ContainerExtension
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
-import io.kotest.property.withAssumptions
 import org.testcontainers.containers.localstack.LocalStackContainer
 import org.testcontainers.utility.DockerImageName
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
@@ -27,68 +26,65 @@ class DynamoDbMappingSpec : StringSpec({
         .credentialsProvider(
             StaticCredentialsProvider.create(
                 AwsBasicCredentials.create(
-                    localstack.accessKey, localstack.secretKey
-                )
-            )
+                    localstack.accessKey,
+                    localstack.secretKey,
+                ),
+            ),
         ).region(Region.of(localstack.region)).build()
 
     val enhancedClient = DynamoDbEnhancedClient.builder().dynamoDbClient(dynamoClient).build()
 
     "can map java bean" {
-        val existingKeys = mutableSetOf<String>()
         val table = enhancedClient.table("java-record-table", TableSchema.fromClass(JavaRecord::class.java))
         table.createTable()
 
         checkAll(javaRecordArb) { givenRecord ->
-            withAssumptions(!existingKeys.contains(givenRecord.partitionKey)) {
-                existingKeys.add(givenRecord.partitionKey)
+            val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
 
-                table.putItem(givenRecord)
+            table.putItem(givenRecord)
 
-                val actualRecord =
-                    table.getItem(Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build())
+            val actualRecord =
+                table.getItem(key)
 
-                actualRecord shouldBe givenRecord
-            }
+            actualRecord shouldBe givenRecord
+
+            table.deleteItem(key)
         }
     }
 
     "can map lombok bean" {
-        val existingKeys = mutableSetOf<String>()
         val table = enhancedClient.table("lombok-record-table", TableSchema.fromClass(LombokRecord::class.java))
         table.createTable()
 
         checkAll(lombokRecordArb) { givenRecord ->
-            withAssumptions(!existingKeys.contains(givenRecord.partitionKey)) {
-                existingKeys.add(givenRecord.partitionKey)
+            val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
 
-                table.putItem(givenRecord)
+            table.putItem(givenRecord)
 
-                val actualRecord =
-                    table.getItem(Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build())
+            val actualRecord =
+                table.getItem(key)
 
-                actualRecord shouldBe givenRecord
-            }
+            actualRecord shouldBe givenRecord
+
+            table.deleteItem(key)
         }
     }
 
     "can map kotlin bean" {
-        val existingKeys = mutableSetOf<String>()
         val table = enhancedClient.table("kotlin-record-table", DataClassTableSchema(KotlinRecord::class))
         table.createTable()
 
         checkAll(kotlinRecordArb) { givenRecord ->
-            withAssumptions(!existingKeys.contains(givenRecord.partitionKey)) {
-                existingKeys.add(givenRecord.partitionKey)
+            val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
 
-                table.putItem(givenRecord)
+            table.putItem(givenRecord)
 
-                val actualRecord =
-                    table.getItem(Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build())
+            val actualRecord =
+                table.getItem(key)
 
-                actualRecord shouldBe givenRecord
-            }
+            actualRecord shouldBe givenRecord
+
+            table.deleteItem(key)
         }
     }
 })
-
