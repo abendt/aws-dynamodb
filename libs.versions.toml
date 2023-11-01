@@ -34,11 +34,12 @@ kotest-runner = { module = "io.kotest:kotest-runner-junit5", version.ref = "kote
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-datatest = { module = "io.kotest:kotest-framework-datatest", version.ref = "kotest" }
 kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
+kotest-json = { module = "io.kotest:kotest-assertions-json", version.ref = "kotest"}
 
 mockk-core = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 [bundles]
 
-kotest = ["kotest-runner", "kotest-assertions", "kotest-datatest", "kotest-property"]
+kotest = ["kotest-runner", "kotest-assertions", "kotest-datatest", "kotest-property", "kotest-json"]
 logback = ["logback-classic", "logback-core"]
 slf4j = ["slf4j-jul", "slf4j-jcl", "slf4j-api"]
