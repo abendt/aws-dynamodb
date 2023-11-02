@@ -55,7 +55,7 @@ val aJavaRecord = arbitrary {
 }
 
 val aLombokRecord = arbitrary {
-    LombokRecord.builder()
+    LombokImmutableRecord.builder()
         .partitionKey(aPartitionKey.bind())
         .sortKey(aSortKey.bind())
         // scalars

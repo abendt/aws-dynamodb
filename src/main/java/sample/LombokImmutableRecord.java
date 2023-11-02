@@ -13,8 +13,8 @@ import java.util.Set;
 
 @Value
 @Builder
-@DynamoDbImmutable(builder = LombokRecord.LombokRecordBuilder.class)
-public class LombokRecord {
+@DynamoDbImmutable(builder = LombokImmutableRecord.LombokImmutableRecordBuilder.class)
+public class LombokImmutableRecord {
     @Getter(onMethod_ = {@DynamoDbPartitionKey})
     private String partitionKey;
 

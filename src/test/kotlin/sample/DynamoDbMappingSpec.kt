@@ -89,7 +89,7 @@ class DynamoDbMappingSpec : StringSpec({
         println(json)
     }
 
-    "can map java bean" {
+    "can map java pojo bean" {
         val table = enhancedClient.table("java-record-table", TableSchema.fromClass(JavaRecord::class.java))
         table.createTable()
 
@@ -107,8 +107,8 @@ class DynamoDbMappingSpec : StringSpec({
         }
     }
 
-    "can map lombok bean" {
-        val table = enhancedClient.table("lombok-record-table", TableSchema.fromClass(LombokRecord::class.java))
+    "can map lombok data bean" {
+        val table = enhancedClient.table("lombok-record-table", TableSchema.fromClass(LombokImmutableRecord::class.java))
         table.createTable()
 
         checkAll(50, aLombokRecord) { givenRecord ->
@@ -127,7 +127,7 @@ class DynamoDbMappingSpec : StringSpec({
         }
     }
 
-    "can map kotlin bean" {
+    "can map kotlin data class" {
         val table = enhancedClient.table("kotlin-record-table", DataClassTableSchema(KotlinRecord::class))
         table.createTable()
 
