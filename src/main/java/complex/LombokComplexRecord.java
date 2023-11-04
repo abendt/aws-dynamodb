@@ -1,4 +1,4 @@
-package sample;
+package complex;
 
 import java.util.List;
 import java.util.Map;
@@ -14,13 +14,13 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortK
 
 @Value
 @Builder
-@DynamoDbImmutable(builder = LombokImmutableRecord.LombokImmutableRecordBuilder.class)
-public class LombokImmutableRecord {
+@DynamoDbImmutable(builder = LombokComplexRecord.LombokComplexRecordBuilder.class)
+public class LombokComplexRecord {
     @Getter(onMethod_ = {@DynamoDbPartitionKey})
-    private String partitionKey;
+    String partitionKey;
 
     @Getter(onMethod_ = {@DynamoDbSortKey})
-    private int sortKey;
+    int sortKey;
 
     // supported types:
     // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes
@@ -28,45 +28,45 @@ public class LombokImmutableRecord {
     // Scalar Types – A scalar type can represent exactly one value. The scalar types are number,
     // string, binary, boolean, and null.
 
-    private String stringAttribute;
+    String stringAttribute;
 
-    private Boolean booleanAttribute;
-    private boolean booleanPrimitiveAttribute;
+    Boolean booleanAttribute;
+    boolean booleanPrimitiveAttribute;
 
-    private Integer intAttribute;
+    Integer intAttribute;
 
-    private Long longAttribute;
+    Long longAttribute;
 
-    private Float floatAttribute;
+    Float floatAttribute;
 
-    private Double doubleAttribute;
+    Double doubleAttribute;
 
-    private Short shortAttribute;
+    Short shortAttribute;
 
-    private byte[] byteAttribute;
+    byte[] byteAttribute;
 
     // Document Types – A document type can represent a complex structure with nested attributes,
     // such as what you would find in a JSON document. The document types are list and map.
-    private List<String> stringList;
+    List<String> stringList;
 
-    private Map<String, String> stringStringMap;
+    Map<String, String> stringStringMap;
 
     // The document types are list and map. These data types can be nested within each other, to
     // represent complex data structures up to 32 levels deep.
 
-    private List<Nested> nestedList;
+    List<Nested> nestedList;
 
-    private Map<String, Nested> nestedMap;
+    Map<String, Nested> nestedMap;
 
-    private List<NestedLombok> nestedLombokList;
+    List<NestedLombok> nestedLombokList;
 
     // Set Types – A set type can represent multiple scalar values. The set types are string set,
     // number set, and binary set.
 
-    private Set<String> stringSet;
+    Set<String> stringSet;
 
     // when using @With dynamoDb needs to ignore it
 
     @With(onMethod_ = {@DynamoDbIgnore})
-    private String fieldUsingWith;
+    String fieldUsingWith;
 }

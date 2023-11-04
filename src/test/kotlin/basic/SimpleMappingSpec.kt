@@ -1,4 +1,4 @@
-package sample
+package basic
 
 import io.andrewohara.dynamokt.DataClassTableSchema
 import io.kotest.assertions.json.shouldBeValidJson
@@ -9,11 +9,10 @@ import io.kotest.extensions.testcontainers.ContainerExtension
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.maps.shouldContain
 import io.kotest.matchers.shouldBe
-import io.kotest.property.Arb
-import io.kotest.property.arbitrary.string
 import io.kotest.property.checkAll
 import org.testcontainers.containers.localstack.LocalStackContainer
 import org.testcontainers.utility.DockerImageName
+import sample.KotlinRecord
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
@@ -26,7 +25,7 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue
 import software.amazon.awssdk.services.dynamodb.model.GetItemRequest
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest
 
-class DynamoDbMappingSpec : StringSpec({
+class SimpleMappingSpec : StringSpec({
 
     val localstack =
         install(ContainerExtension(LocalStackContainer(DockerImageName.parse("localstack/localstack")))) {
@@ -57,8 +56,6 @@ class DynamoDbMappingSpec : StringSpec({
                 "partitionKey" to AttributeValue.builder().s("my partition key").build(),
                 "sortKey" to AttributeValue.builder().n("12345").build(),
                 "stringAttribute" to AttributeValue.builder().s("my string value").build(),
-                "listAttribute" to AttributeValue.builder().ss("value 1", "value 2", "value 3").build(),
-                "mapAttribute" to AttributeValue.builder().m(mapOf("key 1" to AttributeValue.builder().s("map value").build())).build(),
             )
 
         dynamoClient.putItem(
@@ -114,13 +111,30 @@ class DynamoDbMappingSpec : StringSpec({
         }
     }
 
+    "can map lombok data bean" {
+        val table = enhancedClient.table("lombok-data-table", TableSchema.fromClass(LombokMutableRecord::class.java))
+        table.createTable()
+
+        checkAll(50, aMutableLombokRecord) { givenRecord ->
+
+            val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
+
+            table.putItem(givenRecord)
+
+            val actualRecord =
+                table.getItem(key)
+
+            actualRecord shouldBe givenRecord
+
+            table.deleteItem(key)
+        }
+    }
+
     "can map lombok value bean" {
         val table = enhancedClient.table("lombok-value-table", TableSchema.fromClass(LombokImmutableRecord::class.java))
         table.createTable()
 
-        checkAll(50, aLombokRecord, Arb.string()) { record, aString ->
-
-            val givenRecord = record.withFieldUsingWith(aString)
+        checkAll(50, anImmutableLombokRecord) { givenRecord ->
 
             val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
 

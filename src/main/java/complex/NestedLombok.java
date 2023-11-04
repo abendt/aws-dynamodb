@@ -1,4 +1,4 @@
-package sample;
+package complex;
 
 import java.util.List;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbImmut
 @Builder
 @DynamoDbImmutable(builder = NestedLombok.NestedLombokBuilder.class)
 public class NestedLombok {
-    private String stringAttribute;
+    String stringAttribute;
 
-    private List<NestedLombok> nestedList;
+    List<NestedLombok> nestedList;
 }

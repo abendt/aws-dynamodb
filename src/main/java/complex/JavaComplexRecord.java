@@ -1,9 +1,11 @@
-package sample;
+package complex;
 
 import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 
 @DynamoDbBean
 @ToString
@@ -14,10 +16,32 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
    in case one of the tests fail.
    Lombok is not required for the actual mapping.
 */
-public class Nested {
+public class JavaComplexRecord {
+
+    private String partitionKey;
+    private int sortKey;
+
     private String stringAttribute;
 
     private List<Nested> nestedList;
+
+    @DynamoDbPartitionKey
+    public String getPartitionKey() {
+        return partitionKey;
+    }
+
+    public void setPartitionKey(String partitionKey) {
+        this.partitionKey = partitionKey;
+    }
+
+    @DynamoDbSortKey
+    public int getSortKey() {
+        return sortKey;
+    }
+
+    public void setSortKey(int sortKey) {
+        this.sortKey = sortKey;
+    }
 
     public String getStringAttribute() {
         return stringAttribute;

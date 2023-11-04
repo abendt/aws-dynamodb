@@ -1,4 +1,4 @@
-package sample
+package complex
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
@@ -19,13 +19,13 @@ class TestdataSpec : StringSpec({
         }
     }
 
-    "lombok record arb is deterministic" {
+    "lombok value record arb is deterministic" {
         checkAll<Long> { seed ->
             val rs1 = seed.random()
             val rs2 = seed.random()
 
-            val a = aLombokRecord.next(rs1)
-            val b = aLombokRecord.next(rs2)
+            val a = anImmutableLombokRecord.next(rs1)
+            val b = anImmutableLombokRecord.next(rs2)
 
             a shouldBe b
         }

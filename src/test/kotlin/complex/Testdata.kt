@@ -1,4 +1,4 @@
-package sample
+package complex
 
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.arbitrary
@@ -44,7 +44,7 @@ val collectionMaxSize = 5
 
 val aJavaRecord =
     arbitrary {
-        JavaRecord().apply {
+        JavaComplexRecord().apply {
             partitionKey = aPartitionKey.bind()
             sortKey = aSortKey.bind()
 
@@ -55,9 +55,9 @@ val aJavaRecord =
         }
     }
 
-val aLombokRecord =
+val anImmutableLombokRecord =
     arbitrary {
-        LombokImmutableRecord.builder()
+        LombokComplexRecord.builder()
             .partitionKey(aPartitionKey.bind())
             .sortKey(aSortKey.bind())
             // scalars
@@ -83,13 +83,4 @@ val aLombokRecord =
             // map keys may not be empty
             .nestedMap(Arb.map(aShortString, nested(3), maxSize = collectionMaxSize).bind())
             .build()
-    }
-
-val aKotlinRecord =
-    arbitrary {
-        KotlinRecord(
-            aPartitionKey.bind(),
-            aSortKey.bind(),
-            aShortString.orNull().bind(),
-        )
     }
