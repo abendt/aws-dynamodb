@@ -3,7 +3,7 @@ import org.gradle.accessors.dm.LibrariesForLibs
 plugins {
     id("kotlin-conventions")
     id("com.adarshr.test-logger")
-    id("org.jlleitschuh.gradle.ktlint")
+    id("com.diffplug.spotless")
 }
 
 val libs = the<LibrariesForLibs>()
@@ -44,12 +44,19 @@ configurations {
     }
 }
 
-ktlint {
-    outputToConsole.set(true)
-    verbose.set(true)
-    version.set(libs.versions.ktlint.get())
-}
-
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
+
+configure<com.diffplug.gradle.spotless.SpotlessExtension> {
+    kotlin {
+        ktlint()
+    }
+    kotlinGradle {
+        ktlint()
+    }
+    java {
+        googleJavaFormat().aosp()
+    }
+}
+

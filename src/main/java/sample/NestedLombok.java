@@ -1,10 +1,9 @@
 package sample;
 
+import java.util.List;
 import lombok.Builder;
 import lombok.Value;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbImmutable;
-
-import java.util.List;
 
 @Value
 @Builder

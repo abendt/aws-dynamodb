@@ -42,51 +42,54 @@ private fun nestedLombok(level: Int): Arb<NestedLombok> =
 
 val collectionMaxSize = 5
 
-val aJavaRecord = arbitrary {
-    JavaRecord().apply {
-        partitionKey = aPartitionKey.bind()
-        sortKey = aSortKey.bind()
+val aJavaRecord =
+    arbitrary {
+        JavaRecord().apply {
+            partitionKey = aPartitionKey.bind()
+            sortKey = aSortKey.bind()
 
-        // attributes may be null
-        stringAttribute = aShortString.orNull().bind()
+            // attributes may be null
+            stringAttribute = aShortString.orNull().bind()
 
-        nestedList = Arb.list(nested(3), 0..collectionMaxSize).bind()
+            nestedList = Arb.list(nested(3), 0..collectionMaxSize).bind()
+        }
     }
-}
 
-val aLombokRecord = arbitrary {
-    LombokImmutableRecord.builder()
-        .partitionKey(aPartitionKey.bind())
-        .sortKey(aSortKey.bind())
-        // scalars
-        .stringAttribute(aShortString.orNull().bind())
-        .intAttribute(Arb.int().orNull().bind())
-        .booleanAttribute(Arb.boolean().orNull().bind())
-        .booleanPrimitiveAttribute(Arb.boolean().bind())
-        .longAttribute(Arb.long().orNull().bind())
-        // Numbers can have up to 38 digits of precision. Exceeding this results in an exception. If you need greater precision than 38 digits, you can use strings.
-        // .doubleAttribute(Arb.double(includeNonFiniteEdgeCases = false).orNull().bind())
-        .floatAttribute(Arb.float(includeNonFiniteEdgeCases = false).orNull().bind())
-        .shortAttribute(Arb.short().orNull().bind())
-        .byteAttribute(Arb.byteArray(Arb.int(0..10), Arb.byte()).bind())
-        // lists may be empty
-        .stringList(Arb.list(anEmptyOrShortString, 0..collectionMaxSize).bind())
-        // map may be empty, map keys may not be empty
-        .stringStringMap(Arb.map(aShortString, anEmptyOrShortString, maxSize = collectionMaxSize).bind())
-        // set may not be empty, entries may be empty
-        .stringSet(Arb.set(anEmptyOrShortString, 1..collectionMaxSize).bind())
-        // lists may be empty
-        .nestedList(Arb.list(nested(3), 0..collectionMaxSize).bind())
-        .nestedLombokList(Arb.list(nestedLombok(3), 0..collectionMaxSize).bind())
-        // map keys may not be empty
-        .nestedMap(Arb.map(aShortString, nested(3), maxSize = collectionMaxSize).bind())
-        .build()
-}
+val aLombokRecord =
+    arbitrary {
+        LombokImmutableRecord.builder()
+            .partitionKey(aPartitionKey.bind())
+            .sortKey(aSortKey.bind())
+            // scalars
+            .stringAttribute(aShortString.orNull().bind())
+            .intAttribute(Arb.int().orNull().bind())
+            .booleanAttribute(Arb.boolean().orNull().bind())
+            .booleanPrimitiveAttribute(Arb.boolean().bind())
+            .longAttribute(Arb.long().orNull().bind())
+            // Numbers can have up to 38 digits of precision. Exceeding this results in an exception. If you need greater precision than 38 digits, you can use strings.
+            // .doubleAttribute(Arb.double(includeNonFiniteEdgeCases = false).orNull().bind())
+            .floatAttribute(Arb.float(includeNonFiniteEdgeCases = false).orNull().bind())
+            .shortAttribute(Arb.short().orNull().bind())
+            .byteAttribute(Arb.byteArray(Arb.int(0..10), Arb.byte()).bind())
+            // lists may be empty
+            .stringList(Arb.list(anEmptyOrShortString, 0..collectionMaxSize).bind())
+            // map may be empty, map keys may not be empty
+            .stringStringMap(Arb.map(aShortString, anEmptyOrShortString, maxSize = collectionMaxSize).bind())
+            // set may not be empty, entries may be empty
+            .stringSet(Arb.set(anEmptyOrShortString, 1..collectionMaxSize).bind())
+            // lists may be empty
+            .nestedList(Arb.list(nested(3), 0..collectionMaxSize).bind())
+            .nestedLombokList(Arb.list(nestedLombok(3), 0..collectionMaxSize).bind())
+            // map keys may not be empty
+            .nestedMap(Arb.map(aShortString, nested(3), maxSize = collectionMaxSize).bind())
+            .build()
+    }
 
-val aKotlinRecord = arbitrary {
-    KotlinRecord(
-        aPartitionKey.bind(),
-        aSortKey.bind(),
-        aShortString.orNull().bind(),
-    )
-}
+val aKotlinRecord =
+    arbitrary {
+        KotlinRecord(
+            aPartitionKey.bind(),
+            aSortKey.bind(),
+            aShortString.orNull().bind(),
+        )
+    }

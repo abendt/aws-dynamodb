@@ -9,6 +9,8 @@ import io.kotest.extensions.testcontainers.ContainerExtension
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.maps.shouldContain
 import io.kotest.matchers.shouldBe
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.string
 import io.kotest.property.checkAll
 import org.testcontainers.containers.localstack.LocalStackContainer
 import org.testcontainers.utility.DockerImageName
@@ -26,19 +28,21 @@ import software.amazon.awssdk.services.dynamodb.model.PutItemRequest
 
 class DynamoDbMappingSpec : StringSpec({
 
-    val localstack = install(ContainerExtension(LocalStackContainer(DockerImageName.parse("localstack/localstack")))) {
-    }
+    val localstack =
+        install(ContainerExtension(LocalStackContainer(DockerImageName.parse("localstack/localstack")))) {
+        }
 
-    val dynamoClient = DynamoDbClient.builder()
-        .endpointOverride(localstack.endpoint)
-        .credentialsProvider(
-            StaticCredentialsProvider.create(
-                AwsBasicCredentials.create(
-                    localstack.accessKey,
-                    localstack.secretKey,
+    val dynamoClient =
+        DynamoDbClient.builder()
+            .endpointOverride(localstack.endpoint)
+            .credentialsProvider(
+                StaticCredentialsProvider.create(
+                    AwsBasicCredentials.create(
+                        localstack.accessKey,
+                        localstack.secretKey,
+                    ),
                 ),
-            ),
-        ).region(Region.of(localstack.region)).build()
+            ).region(Region.of(localstack.region)).build()
 
     val enhancedClient = DynamoDbEnhancedClient.builder().dynamoDbClient(dynamoClient).build()
 
@@ -48,13 +52,14 @@ class DynamoDbMappingSpec : StringSpec({
         table.createTable()
 
         // use the low-level API to put an item into the table
-        val data = mapOf(
-            "partitionKey" to AttributeValue.builder().s("my partition key").build(),
-            "sortKey" to AttributeValue.builder().n("12345").build(),
-            "stringAttribute" to AttributeValue.builder().s("my string value").build(),
-            "listAttribute" to AttributeValue.builder().ss("value 1", "value 2", "value 3").build(),
-            "mapAttribute" to AttributeValue.builder().m(mapOf("key 1" to AttributeValue.builder().s("map value").build())).build(),
-        )
+        val data =
+            mapOf(
+                "partitionKey" to AttributeValue.builder().s("my partition key").build(),
+                "sortKey" to AttributeValue.builder().n("12345").build(),
+                "stringAttribute" to AttributeValue.builder().s("my string value").build(),
+                "listAttribute" to AttributeValue.builder().ss("value 1", "value 2", "value 3").build(),
+                "mapAttribute" to AttributeValue.builder().m(mapOf("key 1" to AttributeValue.builder().s("map value").build())).build(),
+            )
 
         dynamoClient.putItem(
             PutItemRequest.builder()
@@ -63,15 +68,17 @@ class DynamoDbMappingSpec : StringSpec({
         )
 
         // use the low-level API to fetch the item from the table
-        val key = mapOf(
-            "partitionKey" to AttributeValue.builder().s("my partition key").build(),
-            "sortKey" to AttributeValue.builder().n("12345").build(),
-        )
+        val key =
+            mapOf(
+                "partitionKey" to AttributeValue.builder().s("my partition key").build(),
+                "sortKey" to AttributeValue.builder().n("12345").build(),
+            )
 
-        val request = GetItemRequest.builder()
-            .key(key)
-            .tableName("sample-table")
-            .build()
+        val request =
+            GetItemRequest.builder()
+                .key(key)
+                .tableName("sample-table")
+                .build()
 
         val response = dynamoClient.getItem(request)
         response.hasItem().shouldBeTrue()
@@ -107,12 +114,13 @@ class DynamoDbMappingSpec : StringSpec({
         }
     }
 
-    "can map lombok data bean" {
-        val table = enhancedClient.table("lombok-record-table", TableSchema.fromClass(LombokImmutableRecord::class.java))
+    "can map lombok value bean" {
+        val table = enhancedClient.table("lombok-value-table", TableSchema.fromClass(LombokImmutableRecord::class.java))
         table.createTable()
 
-        checkAll(50, aLombokRecord) { givenRecord ->
-            collect(givenRecord)
+        checkAll(50, aLombokRecord, Arb.string()) { record, aString ->
+
+            val givenRecord = record.withFieldUsingWith(aString)
 
             val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
 
