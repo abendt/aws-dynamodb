@@ -6,9 +6,9 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 
-@DynamoDbBean
-@ToString
 @EqualsAndHashCode
+@ToString
+@DynamoDbBean
 public class JavaRecord {
 
     private String partitionKey;
