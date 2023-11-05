@@ -6,7 +6,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 
-// [START TAG_NAME]
+[START TAG_NAME]
 @DynamoDbBean
 @Data
 public class LombokMutableRecord {
@@ -18,4 +18,4 @@ public class LombokMutableRecord {
 
     String stringAttribute;
 }
-// [END TAG_NAME]
+[END TAG_NAME]
