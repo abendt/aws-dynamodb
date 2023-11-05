@@ -35,7 +35,7 @@ public class JavaRecord {
         return sortKey;
     }
 
-    // |END example]
+    // [END example]
 
     public void setSortKey(int sortKey) {
         this.sortKey = sortKey;
