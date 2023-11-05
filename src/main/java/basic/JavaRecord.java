@@ -12,7 +12,7 @@ Lombok types are used here solely for easier testing. They are not required or u
 @EqualsAndHashCode
 @ToString
 
-// START example
+// [START example]
 @DynamoDbBean
 public class JavaRecord {
 
@@ -35,7 +35,7 @@ public class JavaRecord {
         return sortKey;
     }
 
-    // END example
+    // |END example]
 
     public void setSortKey(int sortKey) {
         this.sortKey = sortKey;

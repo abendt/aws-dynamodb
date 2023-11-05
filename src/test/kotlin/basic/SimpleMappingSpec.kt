@@ -53,7 +53,7 @@ class SimpleMappingSpec : StringSpec({
         val table = enhancedClient.table("sample-table", TableSchema.fromClass(JavaRecord::class.java))
         table.createTable()
 
-        // START low-level-api
+        // [START low-level-api]
         // use the low-level API to put an item into the table
         val item =
             mapOf(
@@ -105,10 +105,10 @@ class SimpleMappingSpec : StringSpec({
         json.shouldBeValidJson()
             .shouldContainJsonKeyValue("$.stringAttribute", "my string value")
         println(json)
-        // END low-level-api
+        // [END low-level-api]
     }
 
-    // START proptest-java
+    // [START proptest-java]
     "can map java pojo bean" {
         val table = enhancedClient.table("java-record-table", TableSchema.fromClass(JavaRecord::class.java))
         table.createTable()
@@ -126,7 +126,7 @@ class SimpleMappingSpec : StringSpec({
             table.deleteItem(key)
         }
     }
-    // END proptest-java
+    // [END proptest-java]
 
     "can map lombok data bean" {
         val table = enhancedClient.table("lombok-data-table", TableSchema.fromClass(LombokMutableRecord::class.java))
