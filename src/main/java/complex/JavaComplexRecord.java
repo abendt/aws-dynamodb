@@ -7,15 +7,12 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 
-@DynamoDbBean
-@ToString
-@EqualsAndHashCode
 /*
-   we have added Lombok toString and equalsHashCode mainly for purposes of the test code.
-   We need a deep recursive comparator for the assertions and we want a meaningful toString representation
-   in case one of the tests fail.
-   Lombok is not required for the actual mapping.
-*/
+Lombok types are used here solely for easier testing. They are not required or used by DynamoDB.
+ */
+@EqualsAndHashCode
+@ToString
+@DynamoDbBean
 public class JavaComplexRecord {
 
     private String partitionKey;

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Value;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbImmutable;
 
+// [START example]
 @Value
 @Builder
 @DynamoDbImmutable(builder = NestedLombok.NestedLombokBuilder.class)
@@ -13,3 +14,4 @@ public class NestedLombok {
 
     List<NestedLombok> nestedList;
 }
+// [END example]

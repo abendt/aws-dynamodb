@@ -12,6 +12,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbImmut
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 
+// [START example]
 @Value
 @Builder
 @DynamoDbImmutable(builder = LombokComplexRecord.LombokComplexRecordBuilder.class)
@@ -70,3 +71,4 @@ public class LombokComplexRecord {
     @With(onMethod_ = {@DynamoDbIgnore})
     String fieldUsingWith;
 }
+// [END example]

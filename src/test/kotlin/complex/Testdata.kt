@@ -24,6 +24,7 @@ private val aPartitionKey = Arb.uuid().map { it.toString() }
 
 private val aSortKey = Arb.int()
 
+// [START example]
 private fun nested(level: Int): Arb<Nested> =
     arbitrary {
         Nested().apply {
@@ -41,19 +42,6 @@ private fun nestedLombok(level: Int): Arb<NestedLombok> =
     }
 
 val collectionMaxSize = 5
-
-val aJavaRecord =
-    arbitrary {
-        JavaComplexRecord().apply {
-            partitionKey = aPartitionKey.bind()
-            sortKey = aSortKey.bind()
-
-            // attributes may be null
-            stringAttribute = aShortString.orNull().bind()
-
-            nestedList = Arb.list(nested(3), 0..collectionMaxSize).bind()
-        }
-    }
 
 val anImmutableLombokRecord =
     arbitrary {
@@ -83,4 +71,18 @@ val anImmutableLombokRecord =
             // map keys may not be empty
             .nestedMap(Arb.map(aShortString, nested(3), maxSize = collectionMaxSize).bind())
             .build()
+    }
+// [END example]
+
+val aJavaRecord =
+    arbitrary {
+        JavaComplexRecord().apply {
+            partitionKey = aPartitionKey.bind()
+            sortKey = aSortKey.bind()
+
+            // attributes may be null
+            stringAttribute = aShortString.orNull().bind()
+
+            nestedList = Arb.list(nested(3), 0..collectionMaxSize).bind()
+        }
     }
