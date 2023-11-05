@@ -24,9 +24,11 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue
 import software.amazon.awssdk.services.dynamodb.model.GetItemRequest
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest
+import software.amazon.awssdk.services.dynamodb.model.QueryRequest
 
 class SimpleMappingSpec : StringSpec({
 
+    // START localstack
     val localstack =
         install(ContainerExtension(LocalStackContainer(DockerImageName.parse("localstack/localstack")))) {
         }
@@ -44,14 +46,16 @@ class SimpleMappingSpec : StringSpec({
             ).region(Region.of(localstack.region)).build()
 
     val enhancedClient = DynamoDbEnhancedClient.builder().dynamoDbClient(dynamoClient).build()
+    // END localstack
 
     "can use the low-level API" {
         // for simplicity we are here using the enhanced client to create the table instead of the low-level API
         val table = enhancedClient.table("sample-table", TableSchema.fromClass(JavaRecord::class.java))
         table.createTable()
 
+        // START low-level-api
         // use the low-level API to put an item into the table
-        val data =
+        val item =
             mapOf(
                 "partitionKey" to AttributeValue.builder().s("my partition key").build(),
                 "sortKey" to AttributeValue.builder().n("12345").build(),
@@ -61,7 +65,7 @@ class SimpleMappingSpec : StringSpec({
         dynamoClient.putItem(
             PutItemRequest.builder()
                 .tableName("sample-table")
-                .item(data).build(),
+                .item(item).build(),
         )
 
         // use the low-level API to fetch the item from the table
@@ -77,22 +81,34 @@ class SimpleMappingSpec : StringSpec({
                 .tableName("sample-table")
                 .build()
 
-        val response = dynamoClient.getItem(request)
-        response.hasItem().shouldBeTrue()
+        val getResponse = dynamoClient.getItem(request)
+        getResponse.hasItem().shouldBeTrue()
 
         // this result contains the data from the table
-        val result: Map<String, AttributeValue> = response.item()
+        val result: Map<String, AttributeValue> = getResponse.item()
         result.shouldContain("stringAttribute", AttributeValue.builder().s("my string value").build())
         println(result)
 
-        // we can now convert it to JSON using some AWS utils or handle it as we need
+        // alternatively we can do a query
+        val queryResponse =
+            dynamoClient.query(
+                QueryRequest.builder()
+                    .tableName("sample-table")
+                    .keyConditionExpression("partitionKey = :pk")
+                    .expressionAttributeValues(mapOf(":pk" to AttributeValue.builder().s("my partition key").build())).build(),
+            )
+        queryResponse.count() shouldBe 1
+        println(queryResponse.items())
+
+        // finally we can convert it to JSON or handle it as we need
         val json = EnhancedDocument.fromAttributeValueMap(result).toJson()
         json.shouldBeValidJson()
             .shouldContainJsonKeyValue("$.stringAttribute", "my string value")
-
         println(json)
+        // END low-level-api
     }
 
+    // START proptest-java
     "can map java pojo bean" {
         val table = enhancedClient.table("java-record-table", TableSchema.fromClass(JavaRecord::class.java))
         table.createTable()
@@ -110,6 +126,7 @@ class SimpleMappingSpec : StringSpec({
             table.deleteItem(key)
         }
     }
+    // END proptest-java
 
     "can map lombok data bean" {
         val table = enhancedClient.table("lombok-data-table", TableSchema.fromClass(LombokMutableRecord::class.java))

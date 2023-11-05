@@ -9,6 +9,7 @@ import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.uuid
 import sample.KotlinRecord
 
+// START example
 private val aShortString = Arb.string(1..10)
 
 // partition key may not be empty
@@ -26,6 +27,7 @@ val aJavaRecord =
             stringAttribute = aShortString.orNull().bind()
         }
     }
+// END example
 
 val aMutableLombokRecord =
     arbitrary {
