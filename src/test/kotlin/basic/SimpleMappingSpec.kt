@@ -28,7 +28,7 @@ import software.amazon.awssdk.services.dynamodb.model.QueryRequest
 
 class SimpleMappingSpec : StringSpec({
 
-    // START localstack
+    // [START localstack]
     val localstack =
         install(ContainerExtension(LocalStackContainer(DockerImageName.parse("localstack/localstack")))) {
         }
@@ -46,7 +46,7 @@ class SimpleMappingSpec : StringSpec({
             ).region(Region.of(localstack.region)).build()
 
     val enhancedClient = DynamoDbEnhancedClient.builder().dynamoDbClient(dynamoClient).build()
-    // END localstack
+    // [END localstack]
 
     "can use the low-level API" {
         // for simplicity we are here using the enhanced client to create the table instead of the low-level API
