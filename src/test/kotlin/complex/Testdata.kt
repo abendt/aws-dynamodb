@@ -5,6 +5,8 @@ import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.boolean
 import io.kotest.property.arbitrary.byte
 import io.kotest.property.arbitrary.byteArray
+import io.kotest.property.arbitrary.double
+import io.kotest.property.arbitrary.filter
 import io.kotest.property.arbitrary.float
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.list
@@ -29,7 +31,12 @@ private fun nested(level: Int): Arb<Nested> =
     arbitrary {
         Nested().apply {
             stringAttribute = aShortString.bind()
-            nestedList = if (level == 0) emptyList() else Arb.list(nested(level - 1), 0..3).bind()
+            nestedList =
+                if (level == 0 || Arb.boolean().bind()) {
+                    emptyList()
+                } else {
+                    Arb.list(nested(level - 1), 0..3).bind()
+                }
         }
     }
 
@@ -37,7 +44,13 @@ private fun nestedLombok(level: Int): Arb<NestedLombok> =
     arbitrary {
         NestedLombok.builder()
             .stringAttribute(aShortString.bind())
-            .nestedList(if (level == 0) emptyList() else Arb.list(nestedLombok(level - 1), 0..3).bind())
+            .nestedList(
+                if (level == 0 || Arb.boolean().bind()) {
+                    emptyList()
+                } else {
+                    Arb.list(nestedLombok(level - 1), 0..3).bind()
+                },
+            )
             .build()
     }
 
@@ -54,9 +67,15 @@ val anImmutableLombokRecord =
             .booleanAttribute(Arb.boolean().orNull().bind())
             .booleanPrimitiveAttribute(Arb.boolean().bind())
             .longAttribute(Arb.long().orNull().bind())
-            // Numbers can have up to 38 digits of precision. Exceeding this results in an exception. If you need greater precision than 38 digits, you can use strings.
-            // .doubleAttribute(Arb.double(includeNonFiniteEdgeCases = false).orNull().bind())
-            .floatAttribute(Arb.float(includeNonFiniteEdgeCases = false).orNull().bind())
+            // Numbers can have up to 38 digits of precision.
+            // Exceeding this results in an exception.
+            // If you need greater precision than 38 digits, you can use strings.
+            // .doubleAttribute(Arb.double(includeNonFiniteEdgeCases = false, range = -9.9e125..9.9e125).orNull().bind())
+            .doubleAttribute(Arb.double(includeNonFiniteEdgeCases = false).orNull().bind())
+            .floatAttribute(
+                Arb.float(includeNonFiniteEdgeCases = false)
+                    .filter { it != -0.0f }.orNull().bind(),
+            )
             .shortAttribute(Arb.short().orNull().bind())
             .byteAttribute(Arb.byteArray(Arb.int(0..10), Arb.byte()).bind())
             // lists may be empty

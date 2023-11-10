@@ -23,11 +23,8 @@ public class LombokComplexRecord {
     @Getter(onMethod_ = {@DynamoDbSortKey})
     int sortKey;
 
-    // supported types:
-    // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes
-
-    // Scalar Types – A scalar type can represent exactly one value. The scalar types are number,
-    // string, binary, boolean, and null.
+    // Scalar Types – A scalar type can represent exactly one value.
+    // The scalar types are number, string, binary, boolean, and null.
 
     String stringAttribute;
 
@@ -46,14 +43,16 @@ public class LombokComplexRecord {
 
     byte[] byteAttribute;
 
-    // Document Types – A document type can represent a complex structure with nested attributes,
-    // such as what you would find in a JSON document. The document types are list and map.
+    // Document Types – A document type can represent a complex structure
+    // with nested attributes, such as what you would find in a JSON document.
+    // The document types are list and map.
     List<String> stringList;
 
     Map<String, String> stringStringMap;
 
-    // The document types are list and map. These data types can be nested within each other, to
-    // represent complex data structures up to 32 levels deep.
+    // The document types are list and map. These data types can be
+    // nested within each other, to represent complex data
+    // structures up to 32 levels deep.
 
     List<Nested> nestedList;
 
@@ -61,8 +60,8 @@ public class LombokComplexRecord {
 
     List<NestedLombok> nestedLombokList;
 
-    // Set Types – A set type can represent multiple scalar values. The set types are string set,
-    // number set, and binary set.
+    // Set Types – A set type can represent multiple scalar values.
+    // The set types are string set, number set, and binary set.
 
     Set<String> stringSet;
 
