@@ -8,10 +8,6 @@ import io.kotest.property.random
 
 class TestdataSpec : StringSpec({
 
-    "java float" {
-        0.0f shouldBe -0.0f
-    }
-
     "java record arb is deterministic" {
         checkAll<Long> { seed ->
             val rs1 = seed.random()
