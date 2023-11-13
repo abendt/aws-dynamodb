@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation("software.amazon.awssdk:dynamodb-enhanced:2.21.15")
+    implementation("software.amazon.awssdk:dynamodb-enhanced:2.21.21")
 
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
