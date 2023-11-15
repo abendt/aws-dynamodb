@@ -21,7 +21,7 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 public class SimpleMappingTest {
 
     @Container
-    final LocalStackContainer localstack =
+    LocalStackContainer localstack =
             new LocalStackContainer(DockerImageName.parse("localstack/localstack"));
 
     DynamoDbEnhancedClient enhancedClient;
@@ -43,7 +43,7 @@ public class SimpleMappingTest {
     }
 
     @Test
-    @DisplayName("can map Lombok value record (junit5)")
+    @DisplayName("can map Lombok value record")
     void canMapLombokValueRecord() {
 
         var table =
@@ -59,10 +59,9 @@ public class SimpleMappingTest {
                         .stringAttribute("my-string-value")
                         .build();
 
-        var key = Key.builder().partitionValue("my-partition-key").sortValue(10).build();
-
         table.putItem(givenRecord);
 
+        var key = Key.builder().partitionValue("my-partition-key").sortValue(10).build();
         var actualRecord = table.getItem(key);
 
         assertThat(actualRecord).usingRecursiveComparison().isEqualTo(givenRecord);

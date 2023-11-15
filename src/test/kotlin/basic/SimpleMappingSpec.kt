@@ -113,6 +113,7 @@ class SimpleMappingSpec : StringSpec({
         val table = enhancedClient.table("java-record-table", TableSchema.fromClass(JavaRecord::class.java))
         table.createTable()
 
+        // use 50 iterations
         checkAll(50, aJavaRecord) { givenRecord ->
             val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
 

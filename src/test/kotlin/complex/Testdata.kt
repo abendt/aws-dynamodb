@@ -5,10 +5,12 @@ import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.boolean
 import io.kotest.property.arbitrary.byte
 import io.kotest.property.arbitrary.byteArray
+import io.kotest.property.arbitrary.choose
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.filter
 import io.kotest.property.arbitrary.float
 import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.lazy
 import io.kotest.property.arbitrary.list
 import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.map
@@ -32,10 +34,11 @@ private fun nested(level: Int): Arb<Nested> =
         Nested().apply {
             stringAttribute = aShortString.bind()
             nestedList =
-                if (level == 0 || Arb.boolean().bind()) {
+                if (level == 0 || Arb.choose(1 to true, 4 to false).bind()) {
+                    // recursion is limited, additionally limit depth in 20% of cases
                     emptyList()
                 } else {
-                    Arb.list(nested(level - 1), 0..3).bind()
+                    Arb.lazy { Arb.list(nested(level - 1), 0..3) }.bind()
                 }
         }
     }
@@ -45,10 +48,11 @@ private fun nestedLombok(level: Int): Arb<NestedLombok> =
         NestedLombok.builder()
             .stringAttribute(aShortString.bind())
             .nestedList(
-                if (level == 0 || Arb.boolean().bind()) {
+                if (level == 0 || Arb.choose(1 to true, 4 to false).bind()) {
+                    // recursion is limited, additionally limit depth in 20% of cases
                     emptyList()
                 } else {
-                    Arb.list(nestedLombok(level - 1), 0..3).bind()
+                    Arb.lazy { Arb.list(nestedLombok(level - 1), 0..3) }.bind()
                 },
             )
             .build()
@@ -70,8 +74,10 @@ val anImmutableLombokRecord =
             // Numbers can have up to 38 digits of precision.
             // Exceeding this results in an exception.
             // If you need greater precision than 38 digits, you can use strings.
-            .doubleAttribute(Arb.double(includeNonFiniteEdgeCases = false, range = -9.9e125..9.9e125).orNull().bind())
-            // .doubleAttribute(Arb.double(includeNonFiniteEdgeCases = false).orNull().bind())
+            // the range we are using is not completely accurate, supported range is prohably bigger
+            .doubleAttribute(Arb.double(includeNonFiniteEdgeCases = false, range = -10e120..10e120).orNull().bind())
+            // default mapper cannot handle Infinity and NaN
+            // -0.0f is mapped back to 0.0 so we need to filter it out
             .floatAttribute(
                 Arb.float(includeNonFiniteEdgeCases = false)
                     .filter { it != -0.0f }.orNull().bind(),
