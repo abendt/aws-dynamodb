@@ -39,15 +39,15 @@ class ComplexMappingSpec : StringSpec({
         val table = enhancedClient.table("java-complex-record-table", TableSchema.fromClass(JavaComplexItem::class.java))
         table.createTable()
 
-        checkAll(50, aJavaComplexItem) { givenRecord ->
-            val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
+        checkAll(50, aJavaComplexItem) { givenItem ->
+            val key = Key.builder().partitionValue(givenItem.partitionKey).sortValue(givenItem.sortKey).build()
 
-            table.putItem(givenRecord)
+            table.putItem(givenItem)
 
-            val actualRecord =
+            val actualItem =
                 table.getItem(key)
 
-            actualRecord shouldBe givenRecord
+            actualItem shouldBe givenItem
 
             table.deleteItem(key)
         }
@@ -57,15 +57,15 @@ class ComplexMappingSpec : StringSpec({
         val table = enhancedClient.table("lombok-complex-value-table", TableSchema.fromClass(LombokComplexItem::class.java))
         table.createTable()
 
-        checkAll(50, aLombokComplexItem) { givenRecord ->
-            val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
+        checkAll(50, aLombokComplexItem) { givenItem ->
+            val key = Key.builder().partitionValue(givenItem.partitionKey).sortValue(givenItem.sortKey).build()
 
-            table.putItem(givenRecord)
+            table.putItem(givenItem)
 
-            val actualRecord =
+            val actualItem =
                 table.getItem(key)
 
-            actualRecord shouldBe givenRecord
+            actualItem shouldBe givenItem
 
             table.deleteItem(key)
         }

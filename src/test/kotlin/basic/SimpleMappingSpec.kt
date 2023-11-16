@@ -113,16 +113,16 @@ class SimpleMappingSpec : StringSpec({
         val table = enhancedClient.table("java-record-table", TableSchema.fromClass(JavaItem::class.java))
         table.createTable()
 
-        // use 50 iterations
-        checkAll(50, aJavaItem) { givenRecord ->
-            val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
+        checkAll(50, aJavaItem) { givenItem ->
+            // this block will be evaluated 50 times, each time with a new generated testdata value
+            val key = Key.builder().partitionValue(givenItem.partitionKey).sortValue(givenItem.sortKey).build()
 
-            table.putItem(givenRecord)
+            table.putItem(givenItem)
 
-            val actualRecord =
+            val actualItem =
                 table.getItem(key)
 
-            actualRecord shouldBe givenRecord
+            actualItem shouldBe givenItem
 
             table.deleteItem(key)
         }
@@ -133,16 +133,16 @@ class SimpleMappingSpec : StringSpec({
         val table = enhancedClient.table("lombok-data-table", TableSchema.fromClass(LombokMutableItem::class.java))
         table.createTable()
 
-        checkAll(50, aMutableLombokItem) { givenRecord ->
+        checkAll(50, aMutableLombokItem) { givenItem ->
 
-            val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
+            val key = Key.builder().partitionValue(givenItem.partitionKey).sortValue(givenItem.sortKey).build()
 
-            table.putItem(givenRecord)
+            table.putItem(givenItem)
 
-            val actualRecord =
+            val actualItem =
                 table.getItem(key)
 
-            actualRecord shouldBe givenRecord
+            actualItem shouldBe givenItem
 
             table.deleteItem(key)
         }
@@ -152,16 +152,16 @@ class SimpleMappingSpec : StringSpec({
         val table = enhancedClient.table("lombok-value-table", TableSchema.fromClass(LombokImmutableItem::class.java))
         table.createTable()
 
-        checkAll(50, anImmutableLombokItem) { givenRecord ->
+        checkAll(50, anImmutableLombokItem) { givenItem ->
 
-            val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
+            val key = Key.builder().partitionValue(givenItem.partitionKey).sortValue(givenItem.sortKey).build()
 
-            table.putItem(givenRecord)
+            table.putItem(givenItem)
 
-            val actualRecord =
+            val actualItem =
                 table.getItem(key)
 
-            actualRecord shouldBe givenRecord
+            actualItem shouldBe givenItem
 
             table.deleteItem(key)
         }
@@ -171,15 +171,15 @@ class SimpleMappingSpec : StringSpec({
         val table = enhancedClient.table("kotlin-record-table", DataClassTableSchema(KotlinItem::class))
         table.createTable()
 
-        checkAll(50, aKotlinItem) { givenRecord ->
-            val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
+        checkAll(50, aKotlinItem) { givenItem ->
+            val key = Key.builder().partitionValue(givenItem.partitionKey).sortValue(givenItem.sortKey).build()
 
-            table.putItem(givenRecord)
+            table.putItem(givenItem)
 
-            val actualRecord =
+            val actualItem =
                 table.getItem(key)
 
-            actualRecord shouldBe givenRecord
+            actualItem shouldBe givenItem
 
             table.deleteItem(key)
         }
