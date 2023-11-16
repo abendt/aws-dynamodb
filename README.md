@@ -1,14 +1,13 @@
-Kotlin single module project blueprint
-======================================
+Using the dynamodb-enhanced client
+==================================
 
-Buildtool
-* Gradle (Kotlin DSL)
+These are the examples for a Blog article: https://red-green-coding.github.io/
 
-Basic dependencies
-* Kotlin JVM
-* Kotlin Logging
-* slf4j + logback
+Dependencies:
+* Java 19
+* Docker
 
-Testing
-* Kotest
-* mockk
+Build the project and run all the tests:
+```bash
+./gradlew build
+```

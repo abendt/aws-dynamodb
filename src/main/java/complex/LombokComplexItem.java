@@ -15,8 +15,8 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortK
 // [START example]
 @Value
 @Builder
-@DynamoDbImmutable(builder = LombokComplexRecord.LombokComplexRecordBuilder.class)
-public class LombokComplexRecord {
+@DynamoDbImmutable(builder = LombokComplexItem.LombokComplexItemBuilder.class)
+public class LombokComplexItem {
     @Getter(onMethod_ = {@DynamoDbPartitionKey})
     String partitionKey;
 

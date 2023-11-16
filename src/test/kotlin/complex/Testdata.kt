@@ -60,9 +60,9 @@ private fun nestedLombok(level: Int): Arb<NestedLombok> =
 
 val collectionMaxSize = 5
 
-val anImmutableLombokRecord =
+val aLombokComplexItem =
     arbitrary {
-        LombokComplexRecord.builder()
+        LombokComplexItem.builder()
             .partitionKey(aPartitionKey.bind())
             .sortKey(aSortKey.bind())
             // scalars
@@ -99,9 +99,9 @@ val anImmutableLombokRecord =
     }
 // [END example]
 
-val aJavaRecord =
+val aJavaComplexItem =
     arbitrary {
-        JavaComplexRecord().apply {
+        JavaComplexItem().apply {
             partitionKey = aPartitionKey.bind()
             sortKey = aSortKey.bind()
 

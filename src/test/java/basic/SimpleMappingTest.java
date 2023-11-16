@@ -49,11 +49,11 @@ public class SimpleMappingTest {
         var table =
                 enhancedClient.table(
                         "junit-lombok-value-table",
-                        TableSchema.fromClass(LombokImmutableRecord.class));
+                        TableSchema.fromClass(LombokImmutableItem.class));
         table.createTable();
 
         var givenRecord =
-                LombokImmutableRecord.builder()
+                LombokImmutableItem.builder()
                         .partitionKey("my-partition-key")
                         .sortKey(10)
                         .stringAttribute("my-string-value")

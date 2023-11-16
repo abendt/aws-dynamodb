@@ -1,6 +1,5 @@
-package complex;
+package basic;
 
-import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
@@ -8,19 +7,19 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbParti
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 
 /*
-Lombok types are used here solely for easier testing. They are not required or used by DynamoDB.
+Lombok annotations are used here solely for easier testing. They are not required or used by DynamoDB.
  */
 @EqualsAndHashCode
 @ToString
+
+// [START example]
 @DynamoDbBean
-public class JavaComplexRecord {
+public class JavaItem {
 
     private String partitionKey;
     private int sortKey;
 
     private String stringAttribute;
-
-    private List<Nested> nestedList;
 
     @DynamoDbPartitionKey
     public String getPartitionKey() {
@@ -36,6 +35,8 @@ public class JavaComplexRecord {
         return sortKey;
     }
 
+    // [END example]
+
     public void setSortKey(int sortKey) {
         this.sortKey = sortKey;
     }
@@ -46,13 +47,5 @@ public class JavaComplexRecord {
 
     public void setStringAttribute(String stringAttribute) {
         this.stringAttribute = stringAttribute;
-    }
-
-    public List<Nested> getNestedList() {
-        return nestedList;
-    }
-
-    public void setNestedList(List<Nested> nestedList) {
-        this.nestedList = nestedList;
     }
 }

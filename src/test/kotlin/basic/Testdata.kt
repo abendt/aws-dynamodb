@@ -7,7 +7,7 @@ import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.uuid
-import sample.KotlinRecord
+import sample.KotlinItem
 
 // [START example]
 private val aShortString = Arb.string(1..10)
@@ -17,9 +17,11 @@ private val aPartitionKey = Arb.uuid().map { it.toString() }
 
 private val aSortKey = Arb.int()
 
-val aJavaRecord =
+val aJavaItem =
     arbitrary {
-        JavaRecord().apply {
+        // this block is evaluated to produce a new testdata value
+        JavaItem().apply {
+            // we use the existing generators to populate our item with random values
             partitionKey = aPartitionKey.bind()
             sortKey = aSortKey.bind()
 
@@ -29,28 +31,27 @@ val aJavaRecord =
     }
 // [END example]
 
-val aMutableLombokRecord =
+val aMutableLombokItem =
     arbitrary {
-        LombokMutableRecord().apply {
+        LombokMutableItem().apply {
             partitionKey = aPartitionKey.bind()
             sortKey = aSortKey.bind()
             stringAttribute = aShortString.orNull().bind()
         }
     }
 
-val anImmutableLombokRecord =
+val anImmutableLombokItem =
     arbitrary {
-        LombokImmutableRecord.builder()
+        LombokImmutableItem.builder()
             .partitionKey(aPartitionKey.bind())
             .sortKey(aSortKey.bind())
-            // scalars
             .stringAttribute(aShortString.orNull().bind())
             .build()
     }
 
-val aKotlinRecord =
+val aKotlinItem =
     arbitrary {
-        KotlinRecord(
+        KotlinItem(
             aPartitionKey.bind(),
             aSortKey.bind(),
             aShortString.orNull().bind(),

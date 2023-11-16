@@ -35,11 +35,11 @@ class ComplexMappingSpec : StringSpec({
 
     val enhancedClient = DynamoDbEnhancedClient.builder().dynamoDbClient(dynamoClient).build()
 
-    "can map complex java pojo bean" {
-        val table = enhancedClient.table("java-complex-record-table", TableSchema.fromClass(JavaComplexRecord::class.java))
+    "can map complex JavaBean" {
+        val table = enhancedClient.table("java-complex-record-table", TableSchema.fromClass(JavaComplexItem::class.java))
         table.createTable()
 
-        checkAll(50, aJavaRecord) { givenRecord ->
+        checkAll(50, aJavaComplexItem) { givenRecord ->
             val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
 
             table.putItem(givenRecord)
@@ -53,12 +53,11 @@ class ComplexMappingSpec : StringSpec({
         }
     }
 
-    "can map complex lombok value bean" {
-        val table = enhancedClient.table("lombok-complex-value-table", TableSchema.fromClass(LombokComplexRecord::class.java))
+    "can map complex Lombok @Value" {
+        val table = enhancedClient.table("lombok-complex-value-table", TableSchema.fromClass(LombokComplexItem::class.java))
         table.createTable()
 
-        checkAll(50, anImmutableLombokRecord) { givenRecord ->
-
+        checkAll(50, aLombokComplexItem) { givenRecord ->
             val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
 
             table.putItem(givenRecord)

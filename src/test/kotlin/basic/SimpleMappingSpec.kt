@@ -12,7 +12,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
 import org.testcontainers.containers.localstack.LocalStackContainer
 import org.testcontainers.utility.DockerImageName
-import sample.KotlinRecord
+import sample.KotlinItem
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
@@ -50,7 +50,7 @@ class SimpleMappingSpec : StringSpec({
 
     "can use the low-level API" {
         // for simplicity we are here using the enhanced client to create the table instead of the low-level API
-        val table = enhancedClient.table("sample-table", TableSchema.fromClass(JavaRecord::class.java))
+        val table = enhancedClient.table("sample-table", TableSchema.fromClass(JavaItem::class.java))
         table.createTable()
 
         // [START low-level-api]
@@ -109,12 +109,12 @@ class SimpleMappingSpec : StringSpec({
     }
 
     // [START proptest-java]
-    "can map java pojo bean" {
-        val table = enhancedClient.table("java-record-table", TableSchema.fromClass(JavaRecord::class.java))
+    "can map JavaBean" {
+        val table = enhancedClient.table("java-record-table", TableSchema.fromClass(JavaItem::class.java))
         table.createTable()
 
         // use 50 iterations
-        checkAll(50, aJavaRecord) { givenRecord ->
+        checkAll(50, aJavaItem) { givenRecord ->
             val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
 
             table.putItem(givenRecord)
@@ -129,11 +129,11 @@ class SimpleMappingSpec : StringSpec({
     }
     // [END proptest-java]
 
-    "can map lombok data bean" {
-        val table = enhancedClient.table("lombok-data-table", TableSchema.fromClass(LombokMutableRecord::class.java))
+    "can map Lombok @Data" {
+        val table = enhancedClient.table("lombok-data-table", TableSchema.fromClass(LombokMutableItem::class.java))
         table.createTable()
 
-        checkAll(50, aMutableLombokRecord) { givenRecord ->
+        checkAll(50, aMutableLombokItem) { givenRecord ->
 
             val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
 
@@ -148,11 +148,11 @@ class SimpleMappingSpec : StringSpec({
         }
     }
 
-    "can map lombok value bean" {
-        val table = enhancedClient.table("lombok-value-table", TableSchema.fromClass(LombokImmutableRecord::class.java))
+    "can map Lombok @Value" {
+        val table = enhancedClient.table("lombok-value-table", TableSchema.fromClass(LombokImmutableItem::class.java))
         table.createTable()
 
-        checkAll(50, anImmutableLombokRecord) { givenRecord ->
+        checkAll(50, anImmutableLombokItem) { givenRecord ->
 
             val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
 
@@ -167,11 +167,11 @@ class SimpleMappingSpec : StringSpec({
         }
     }
 
-    "can map kotlin data class" {
-        val table = enhancedClient.table("kotlin-record-table", DataClassTableSchema(KotlinRecord::class))
+    "can map Kotlin data class" {
+        val table = enhancedClient.table("kotlin-record-table", DataClassTableSchema(KotlinItem::class))
         table.createTable()
 
-        checkAll(50, aKotlinRecord) { givenRecord ->
+        checkAll(50, aKotlinItem) { givenRecord ->
             val key = Key.builder().partitionValue(givenRecord.partitionKey).sortValue(givenRecord.sortKey).build()
 
             table.putItem(givenRecord)

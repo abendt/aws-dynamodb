@@ -1,15 +1,17 @@
 package basic;
 
-import lombok.Data;
+import lombok.Builder;
 import lombok.Getter;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import lombok.Value;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbImmutable;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 
 // [START example]
-@DynamoDbBean
-@Data
-public class LombokMutableRecord {
+@Value
+@Builder
+@DynamoDbImmutable(builder = LombokImmutableItem.LombokImmutableItemBuilder.class)
+public class LombokImmutableItem {
     @Getter(onMethod_ = {@DynamoDbPartitionKey})
     String partitionKey;
 
